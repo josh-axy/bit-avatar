@@ -1,6 +1,12 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    <h1>{{ message }}</h1>
+    <img src="../assets/logo.png">
+    <p>
+      <button @click="sayHi">
+        Say Hi
+      </button>
+    </p>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -31,11 +37,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
 
 @Component
 export default class HelloWorld extends Vue {
-  @Prop() private msg!: string;
+  @Prop(String) private message!: string;
+  get hRandom() {
+    return Math.random();
+  }
+  @Emit()
+  private sayHi() {
+    return this.hRandom;
+  }
 }
 </script>
 
