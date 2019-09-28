@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <h1>{{ message }}</h1>
-    <img v-show="!headImgUrl.length" src="../assets/logo.png">
+    <img v-if="false" v-show="!headImgUrl.length" src="../assets/logo.png">
     <p v-if="false">
       <button @click="sayHi">
         Say Hi
@@ -31,18 +31,23 @@ export default class Greet extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+  .hello {
+    h1 {
+      margin: 6rem 0 3rem;
+    }
+  }
+  h3 {
+    margin: 40px 0 0;
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
+  a {
+    color: #42b983;
+  }
 </style>
