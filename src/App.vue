@@ -16,28 +16,8 @@
   body {
     background-size: cover;
     background-position: center;
-    background-color: crimson;
+    background-color: rgb(250, 249, 247);
     background-image: url("./assets/background.jpg");
-  }
-  .flex-row--center{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .center-flow{
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    width: 90vw;
-    max-width: 675px;
-  }
-  .flex-col{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    .submit-button {
-      margin: 1.5rem 0;
-    }
   }
   .text-gray-1{
     color: #303133;

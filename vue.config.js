@@ -26,36 +26,36 @@ module.exports = {
   lintOnSave: true,
 
   // 使用带有浏览器内编译器的完整构建版本 // https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only
-  runtimeCompiler: false,
+  runtimeCompiler: true,
 
   // babel-loader默认会跳过`node_modules`依赖. // 通过这个选项可以显示转译一个依赖
-  transpileDependencies: [
-    /* string or regex */
-  ],
+  // transpileDependencies: [
+  //   /* string or regex */
+  // ],
 
   // 是否为生产环境构建生成sourceMap?
   productionSourceMap: false,
 
   // 调整内部的webpack配置. // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
-  chainWebpack: () => {},
-
-  configureWebpack: () => {},
+  // chainWebpack: () => {},
+  //
+  // configureWebpack: () => {},
 
   // CSS 相关选项
   css: {
     // 将组件内部的css提取到一个单独的css文件（只用在生产环境）
 
     // 也可以是传递给 extract-text-webpack-plugin 的选项对象
-    extract: true,
+    // extract: true,
 
     // 允许生成 CSS source maps?
     sourceMap: false,
 
     // pass custom options to pre-processor loaders. e.g. to pass options to // sass-loader, use { sass: { ... } }
-    loaderOptions: {},
+    // loaderOptions: {},
 
     // Enable CSS modules for all css / pre-processor files. // This option does not affect *.vue files.
-    modules: false
+    // modules: false
   },
 
   // use thread-loader for babel & TS in production build // enabled by default if the machine has more than 1 cores
@@ -76,10 +76,11 @@ module.exports = {
 
     https: false,
 
-    // hotOnly: false, // See https://github.com/vuejs/vue-cli/blob/dev/docs/cli-service.md#configuring-proxy
+    // hotOnly: false,
 
+    // See https://github.com/vuejs/vue-cli/blob/dev/docs/cli-service.md#configuring-proxy
     proxy: {
-      '/bit': {
+      '/api': {
         target: 'http://host.laotiehui.cc',
         // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
         changeOrigin: true,
@@ -95,8 +96,9 @@ module.exports = {
     // string | Object
 
     // before: app => {}
-  }, // 第三方插件配置
+  },
 
+  // 第三方插件配置
   pluginOptions: {
     // ...
   }

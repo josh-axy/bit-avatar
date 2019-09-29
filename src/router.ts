@@ -11,6 +11,10 @@ export default new Router({
   routes: [
     {
       path: '/',
+      redirect: '/avatar'
+    },
+    {
+      path: '/avatar',
       name: 'avatar',
       component: AvatarFactory,
     },

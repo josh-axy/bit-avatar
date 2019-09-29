@@ -1,20 +1,22 @@
 <template>
-  <div class="avatar-factory">
-    <Greet v-if="false" message="我为祖国母亲庆生 | BITSU" :headImgUrl="headImgUrl" @say-hi="sayHi"/>
-
+  <div class="avatar-factory" v-loading.fullscreen.lock="isLoading">
     <div class="flex-col">
       <div class="center-flow">
-        <el-button plain circle type="warning" icon="el-icon-arrow-left" @click="switchCover(-1)"></el-button>
-        <canvas v-show="canvasVisible" id="avatarGraph" width="384" height="384" @click="chooseImg">
-          您的浏览器不支持 HTML5 canvas 标签。
-        </canvas>
-        <el-avatar v-show="!canvasVisible" shape="square" :size="128" :src="headImgUrl" />
-        <el-button plain circle type="warning" icon="el-icon-arrow-right" @click="switchCover(1)"></el-button>
+        <el-button circle type="warning" icon="el-icon-arrow-left" @click="switchCover(-1)"></el-button>
+        <div class="avatar-wrap">
+          <canvas v-show="canvasVisible" id="avatarGraph" width="384" height="384" @click="chooseImg">
+            您的浏览器不支持 HTML5 canvas 标签。
+          </canvas>
+          <el-avatar v-show="!canvasVisible" shape="square" :size="128" :src="headImgUrl" />
+        </div>
+        <el-button circle type="warning" icon="el-icon-arrow-right" @click="switchCover(1)"></el-button>
       </div>
 
       <el-button plain type="warning" class="submit-button" @click="genAvatarImg">
         生成纪念头像
       </el-button>
+
+      <span class="info">点击头像，可以更换自己喜欢的图片~</span>
 
       <el-dialog
         title="你的头像出炉啦！"
@@ -30,7 +32,7 @@
         <span slot="footer" class="dialog-footer"></span>
       </el-dialog>
 
-      <div class="credential" v-if="true" contenteditable="true">
+      <div class="credential" v-if="false" contenteditable="true">
         {{ cookie }}
       </div>
     </div>
@@ -40,12 +42,13 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import {mapMutations, mapState} from 'vuex';
-import {Avatar, Button, Dialog, Select} from 'element-ui';
+import {Avatar, Button, Dialog, Select, Loading} from 'element-ui';
 import VueCookies from 'vue-cookies';
-import Greet from '@/components/Greet.vue';
 import {getNonceStr, getURLBase64} from '@/utils';
 
 const WechatJSSDK = require('wechat-jssdk/dist/client.umd');
+const SITE = 'https://www.laotiehui.cc/';
+const SITE_UNSPLASH = 'https://www.laotiehui.cc';
 // ES6 import
 // import WechatJSSDK from 'wechat-jssdk/dist/client.umd';
 
@@ -54,11 +57,11 @@ Vue.use(Select);
 Vue.use(Avatar);
 Vue.use(Dialog);
 Vue.use(VueCookies);
+Vue.use(Loading.directive);
+
+Vue.prototype.$loading = Loading.service;
 
 @Component({
-  components: {
-    Greet,
-  },
   // Vuex's component binding helper can use here
   computed: mapState([
     'count',
@@ -77,8 +80,8 @@ export default class AvatarFactory extends Vue {
   private canvasVisible: boolean = false;
   private currentCover: number = 0;
   private coverList: string[] = [
-    require('@/assets/cover1.png'),
     require('@/assets/cover2.png'),
+    require('@/assets/cover1.png'),
     require('@/assets/cover3.png'),
     require('@/assets/cover4.png'),
   ];
@@ -96,6 +99,7 @@ export default class AvatarFactory extends Vue {
     customUrl: '', // 自定义微信js链接
   };
   private wx: any;
+  private isLoading: boolean = false;
 
   // computed
   get random() {
@@ -105,15 +109,20 @@ export default class AvatarFactory extends Vue {
   // lifecycle hook
   private async mounted() {
     // console.log('mount avatar', this.random, this.$route.query);
-    const { data: res } = await this.axios.get('/bit/get_user_info.php', {params: this.$route.query});
+    if (this.$route.query.state !== 'bitsuNationalDayAvatar') {
+      location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3a294bba257922c0&redirect_uri=https%3a%2f%2fwww.laotiehui.cc%2fbit%2favatar&response_type=code&scope=snsapi_userinfo&state=bitsuNationalDayAvatar';
+      return ;
+    }
+    this.isLoading = true;
+    const { data: res } = await this.axios.get('/api/get_user_info.php', {params: this.$route.query});
     if (res && res.Msg) {
       const data = res.data;
-      this.headImgUrl = data.headimgurl.replace(/\/132$/, '/0').replace('http://', 'https://');
+      this.headImgUrl = data.headimgurl && data.headimgurl.replace(/\/132$/, '/0').replace('http://', 'https://');
       this.nickName = data.nickname;
       // this.cookie = this.$cookies.get('PHPSESSID');
       this.drawAvatar();
     }
-    const { data: sign } = await this.axios.get('/bit/get_sign.php', {
+    const { data: sign } = await this.axios.get('/api/get_sign.php', {
       params: {
         timestamp: this.config.timestamp,
         noncestr: this.config.nonceStr,
@@ -143,8 +152,8 @@ export default class AvatarFactory extends Vue {
         type: 'link',
         title: '庆祝华诞七十年，北理工人换新颜！',
         desc: '@全体北理工人',
-        link: location.href,
-        imgUrl: 'https://www.laotiehui.cc' + require('@/assets/share_cover.jpg'),
+        link: SITE + 'bit/avatar',
+        imgUrl: SITE_UNSPLASH + require('@/assets/share_cover.jpg'),
         // success: (e: any) => {console.log(e)},
         // cancel: function (){}
       });
@@ -153,8 +162,8 @@ export default class AvatarFactory extends Vue {
       wx.updateTimelineShareData({
         type: 'link',
         title: '庆祝华诞七十年，北理工人换新颜！@全体北理工人',
-        link: location.href,
-        imgUrl: 'https://www.laotiehui.cc' + require('@/assets/share_cover.jpg'),
+        link: SITE + 'bit/avatar',
+        imgUrl: SITE_UNSPLASH + require('@/assets/share_cover.jpg'),
         // success: (e: any) => {console.log(e)},
       });
     }
@@ -172,13 +181,18 @@ export default class AvatarFactory extends Vue {
           success: async (serverRes: any) => {
             const serverId = serverRes.serverId; // 返回图片的服务器端ID
             // alert(serverId);
-            this.cookie = serverId;
-            const { data: content } = await this.axios.get('/bit/get_media.php', {
+            // this.cookie = serverId;
+            this.isLoading = true;
+            const { data: content } = await this.axios.get('/api/get_media.php', {
               params: {
                 media_id: serverId,
               },
             });
-            // console.log(content);
+            if (this.$route.query.debug) {
+              alert(JSON.stringify(content));
+            }
+            this.headImgUrl = SITE + content.data;
+            this.drawAvatar();
           }
         });
         // this.wx.getLocalImgData({
@@ -239,6 +253,9 @@ export default class AvatarFactory extends Vue {
     });
     Promise.all([getCover, getImg]).then((pics) => {
       // console.log(pics);
+      if (this.isLoading) {
+        this.isLoading = false;
+      }
       // 执行drawImage语句
       if (canvas.getContext) {
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -269,9 +286,36 @@ export default class AvatarFactory extends Vue {
 
 <style scoped lang="less">
   .avatar-factory{
+    .flex-row--center{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .center-flow{
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      width: 90vw;
+      max-width: 675px;
+    }
+    .flex-col{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .submit-button {
+        margin: 1.5rem 0;
+      }
+      .info{
+        font-size: 12px;
+      }
+    }
     #avatarGraph{
       width: 128px;
       height: 128px;
+    }
+    .avatar-wrap{
+      padding: 10px 10px 8px;
+      border: 2px solid #e6a23c;
     }
     .canvas-dialog{
       .info{
