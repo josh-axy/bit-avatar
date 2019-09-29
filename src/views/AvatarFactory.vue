@@ -2,14 +2,14 @@
   <div class="avatar-factory" v-loading.fullscreen.lock="isLoading">
     <div class="flex-col">
       <div class="center-flow">
-        <el-button circle type="warning" icon="el-icon-arrow-left" @click="switchCover(-1)"></el-button>
+        <el-button circle plain type="warning" icon="el-icon-arrow-left" @click="switchCover(-1)"></el-button>
         <div class="avatar-wrap">
           <canvas v-show="canvasVisible" id="avatarGraph" width="384" height="384" @click="chooseImg">
             您的浏览器不支持 HTML5 canvas 标签。
           </canvas>
           <el-avatar v-show="!canvasVisible" shape="square" :size="128" :src="headImgUrl" />
         </div>
-        <el-button circle type="warning" icon="el-icon-arrow-right" @click="switchCover(1)"></el-button>
+        <el-button circle plain type="warning" icon="el-icon-arrow-right" @click="switchCover(1)"></el-button>
       </div>
 
       <el-button plain type="warning" class="submit-button" @click="genAvatarImg">
@@ -150,7 +150,7 @@ export default class AvatarFactory extends Vue {
       // 内部调用 `wechatObj.callWechatApi('onMenuShareAppMessage', {...})`语法糖
       wx.updateAppMessageShareData({
         type: 'link',
-        title: '庆祝华诞七十年，北理工人换新颜！',
+        title: '砥砺奋进七十年，北理工人换新颜！',
         desc: '@全体北理工人',
         link: SITE + 'bit/avatar',
         imgUrl: SITE_UNSPLASH + require('@/assets/share_cover.jpg'),
@@ -161,7 +161,7 @@ export default class AvatarFactory extends Vue {
       // 语法糖
       wx.updateTimelineShareData({
         type: 'link',
-        title: '庆祝华诞七十年，北理工人换新颜！@全体北理工人',
+        title: '砥砺奋进七十年，北理工人换新颜！@全体北理工人',
         link: SITE + 'bit/avatar',
         imgUrl: SITE_UNSPLASH + require('@/assets/share_cover.jpg'),
         // success: (e: any) => {console.log(e)},
@@ -175,14 +175,14 @@ export default class AvatarFactory extends Vue {
       sizeType: 'compressed',
       success: (res: any) => {
         // console.log('local ids', res.localIds);
+        this.isLoading = true;
         this.wx.uploadImage({
           localId: res.localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
-          isShowProgressTips: 1, // 默认为1，显示进度提示
+          isShowProgressTips: 0, // 默认为1，显示进度提示
           success: async (serverRes: any) => {
             const serverId = serverRes.serverId; // 返回图片的服务器端ID
             // alert(serverId);
             // this.cookie = serverId;
-            this.isLoading = true;
             const { data: content } = await this.axios.get('/api/get_media.php', {
               params: {
                 media_id: serverId,
@@ -307,6 +307,7 @@ export default class AvatarFactory extends Vue {
       }
       .info{
         font-size: 12px;
+        opacity: .85;
       }
     }
     #avatarGraph{
