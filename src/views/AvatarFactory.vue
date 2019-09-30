@@ -42,7 +42,7 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import {mapMutations, mapState} from 'vuex';
-import {Avatar, Button, Dialog, Select, Loading, Message} from 'element-ui';
+import {Avatar, Button, Dialog, Select, Loading} from 'element-ui';
 import VueCookies from 'vue-cookies';
 import {getNonceStr, getURLBase64} from '@/utils';
 
@@ -114,20 +114,20 @@ export default class AvatarFactory extends Vue {
       return ;
     }
     this.isLoading = true;
-    setTimeout(() => {
-      const h = this.$createElement;
-      Message({
-        showClose: true,
-        message: h('p', { style: 'width: 80%' }, [
-          h('span', undefined, '更换自定义头像接口已修复~'),
-          h('i', { style: 'color: teal' }, '感谢您的理解与支持！')
-        ]),
-        duration: 5000,
-        type: 'warning',
-        offset: 20,
-        customClass: 'sys-warning'
-      });
-    }, 2000);
+    // setTimeout(() => {
+    //   const h = this.$createElement;
+    //   Message({
+    //     showClose: true,
+    //     message: h('p', { style: 'width: 80%' }, [
+    //       h('span', undefined, '更换自定义头像接口已修复~'),
+    //       h('i', { style: 'color: teal' }, '感谢您的理解与支持！')
+    //     ]),
+    //     duration: 5000,
+    //     type: 'warning',
+    //     offset: 20,
+    //     customClass: 'sys-warning'
+    //   });
+    // }, 2000);
     const { data: res } = await this.axios.get('/api/get_user_info.php', {params: this.$route.query});
     if (res && res.Msg) {
       const data = res.data;
