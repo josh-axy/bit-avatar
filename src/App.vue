@@ -28,13 +28,16 @@
   .danger{
     color: #F56C6C;
   }
+  .sys-warning{
+    width: 96vw;
+  }
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: azure;
-    margin-top: calc(50vh - 84px);
+    margin-top: calc(50vh - 100px);
   }
   #nav {
     display: none;

@@ -42,7 +42,7 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import {mapMutations, mapState} from 'vuex';
-import {Avatar, Button, Dialog, Select, Loading} from 'element-ui';
+import {Avatar, Button, Dialog, Select, Loading, Message} from 'element-ui';
 import VueCookies from 'vue-cookies';
 import {getNonceStr, getURLBase64} from '@/utils';
 
@@ -114,6 +114,18 @@ export default class AvatarFactory extends Vue {
       return ;
     }
     this.isLoading = true;
+    const h = this.$createElement;
+    Message({
+      showClose: true,
+      message: h('p', { style: 'width: 80%' }, [
+        h('span', undefined, '当前访问人数较多，自定义图像接口出现错误，正在修复中，'),
+        h('i', { style: 'color: teal' }, '感谢理解~')
+      ]),
+      duration: 0,
+      type: 'warning',
+      offset: 160,
+      customClass: 'sys-warning'
+    });
     const { data: res } = await this.axios.get('/api/get_user_info.php', {params: this.$route.query});
     if (res && res.Msg) {
       const data = res.data;
@@ -306,8 +318,8 @@ export default class AvatarFactory extends Vue {
         margin: 1.5rem 0;
       }
       .info{
-        font-size: 12px;
-        opacity: .85;
+        font-size: 13px;
+        color: #e6a23c;
       }
     }
     #avatarGraph{
