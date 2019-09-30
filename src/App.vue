@@ -30,6 +30,7 @@
   }
   .sys-warning{
     width: 96vw;
+    min-width: 0;
   }
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;

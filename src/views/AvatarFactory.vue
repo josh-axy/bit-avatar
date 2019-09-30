@@ -114,18 +114,20 @@ export default class AvatarFactory extends Vue {
       return ;
     }
     this.isLoading = true;
-    const h = this.$createElement;
-    Message({
-      showClose: true,
-      message: h('p', { style: 'width: 80%' }, [
-        h('span', undefined, '当前访问人数较多，自定义图像接口出现错误，正在修复中，'),
-        h('i', { style: 'color: teal' }, '感谢理解~')
-      ]),
-      duration: 0,
-      type: 'warning',
-      offset: 160,
-      customClass: 'sys-warning'
-    });
+    setTimeout(() => {
+      const h = this.$createElement;
+      Message({
+        showClose: true,
+        message: h('p', { style: 'width: 80%' }, [
+          h('span', undefined, '更换自定义头像接口已修复~'),
+          h('i', { style: 'color: teal' }, '感谢您的理解与支持！')
+        ]),
+        duration: 5000,
+        type: 'warning',
+        offset: 20,
+        customClass: 'sys-warning'
+      });
+    }, 2000);
     const { data: res } = await this.axios.get('/api/get_user_info.php', {params: this.$route.query});
     if (res && res.Msg) {
       const data = res.data;
